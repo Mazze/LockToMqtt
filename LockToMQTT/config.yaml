@@ -1,0 +1,41 @@
+name: "Kiwi lock to MQTT"
+description: "First version of a lock to MQTT birdge. This is based on aiokwikset, which in itself is in an instable state. This code has known break points. So use only if you know what you are doing."
+version: "1.0.22"
+slug: "hello_world"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+
+ports:
+  8000/tcp: 8000
+
+options:
+  broker: "192.168.86.27"
+  broker_port: 1883
+  broker_topic: "python/mqtt"
+  broker_username: ""
+  broker_password: ""
+  username: ""
+  access_token: ""
+  refresh_token: ""
+  id_token: ""
+  user_pool_id: ""
+  client_id: ""
+  user_pool_region: "us-east-1"
+schema:
+  broker: str
+  broker_port: int
+  broker_topic: str
+  broker_username: str
+  broker_password: str
+  user_pool_region: str
+  username: str
+  access_token: str
+  refresh_token: str
+  id_token: str
+  user_pool_id: str
+  client_id: str
