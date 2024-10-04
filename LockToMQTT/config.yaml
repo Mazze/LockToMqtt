@@ -1,7 +1,7 @@
 name: "Kiwi lock to MQTT"
 description: "First version of a lock Kiwi to MQTT bridge. This is based on aiokwikset, which in itself is in an instable state. This code has known break points. So use only if you know what you are doing."
-version: "1.0.23"
-slug: "Kiwi_Lock"
+version: "1.0.24"
+slug: "hello_world"
 init: false
 arch:
   - aarch64
