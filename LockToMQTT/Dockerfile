@@ -6,7 +6,7 @@ RUN \
     python3 \
     py3-pip
 
-RUN pip3  install --break-system-packages aiokwikset paho-mqtt
+RUN pip3  install --break-system-packages aiokwikset paho-mqtt coloredlogs
 WORKDIR /data
 # ADD mqttLock.py /opt/mqttLock.py
 COPY mqttLock.py /

@@ -9,6 +9,13 @@ import datetime
 from aiokwikset import API
 import json
 import threading
+import coloredlogs, logging
+
+logger = logging.getLogger(__name__)
+coloredlogs.install(level='DEBUG')
+logger.info("this is an informational message")
+logger.warning("this is a warning message")
+logger.error("this is an error message")
 
 with open('options.json', 'r') as file:
     haOptions = json.load(file)
@@ -32,6 +39,10 @@ async def main() -> None:
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(client, userdata, flags, reason_code ,a):
         print(f"Connected with result code {reason_code}")
+        print(F"Start")
+        f = open("demofile2.txt", "a")
+        f.write("Connected with MQTT\n")
+        f.close()
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         client.subscribe("$SYS/#")
@@ -49,6 +60,11 @@ async def main() -> None:
 
             except Exception as error    :
                 print("Error on topic door/set  ",error)
+                f = open("demofile2.txt", "a")
+                f.write("Error on topic door/set  ")
+                f.write(error)
+                f.write("\n")
+                f.close()
             print("Done")
 
 
@@ -70,13 +86,7 @@ async def main() -> None:
         mqttc.on_subscribe = on_subscribe
         mqttc.username_pw_set(haOptions["broker_username"], haOptions["broker_password"])
 
-        print(F"Connecting")
-        f = open("demofile2.txt", "a")
-        f.write("Connection\n")
-        f.close()
-        mqttc.connect(haOptions["broker"], haOptions["broker_port"], 60)
-        mqttc.loop_start()
-        mqttc.subscribe("door/set")
+
 
         f = open("demofile2.txt", "a")
         f.write("Connected to lock")
@@ -90,18 +100,32 @@ async def main() -> None:
         api.refresh_token = haOptions['refresh_token']
         api.user_pool_id = haOptions['user_pool_id']
         api.client_id = haOptions['client_id']
-        await api.renew_access_token()
+        a = await api.renew_access_token()
         user_info = await api.user.get_info()
 
         homes = await api.user.get_homes()
         devices = await api.device.get_devices(homes[0]['homeid'])
         device_info = await api.device.get_device_info(devices[0]['deviceid'])
-
+        f = open("demofile2.txt", "a")
+        # f.write(a)
+        f.write(str(user_info)+"\n")
+        f.write(str(homes)+"\n")
+        f.write(str(devices)+"\n")
+        f.write(str(device_info)+"\n")
+        f.close()
         ud= {}
         ud['api'] = api
         ud['device_info']=device_info
         ud['devices'] = devices
         ud['user_info'] = await api.user.get_info()
+
+        print(F"Connecting")
+        f = open("demofile2.txt", "a")
+        f.write("Connection\n")
+        f.close()
+        mqttc.connect(haOptions["broker"], haOptions["broker_port"], 60)
+        mqttc.loop_start()
+        mqttc.subscribe("door/set")
         mqttc.user_data_set(ud)
         # mqttc.on_message = on_subscribtion
         while True:
@@ -109,6 +133,7 @@ async def main() -> None:
             print(F"Pubish")
             f = open("demofile2.txt", "a")
             f.write("publish\n")
+            f.write(str(device_info))
             f.close()
             attributeJson= {
                 "batterystatus":device_info['batterystatus'],
